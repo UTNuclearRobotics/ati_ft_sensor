@@ -23,7 +23,7 @@ Currently based on ROS2 humble release.
 
 #### Pull relevant packages and install dependencies
 ```
-vcs import src --skip-existing --input src/ros2_ati_ft_sensor_ws/ft_pub.repos
+vcs import src --skip-existing --input src/ros2_ati_ft_sensor_ws/ati_pub.repos
 rosdep install --ignore-src --from-paths src -y -r
 sudo apt-get install libedit-dev libncurses5
 ```
