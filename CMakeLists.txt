@@ -35,13 +35,26 @@ if(${CURRENT_OS} MATCHES "xenomai")
                                       /usr/src/rtnet/stack/include)
 endif()
 
-# export de dependencies
+# export the dependencies
 ament_export_dependencies(Boost real_time_tools)
 # Export the target.
 ament_export_interfaces(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
 
 set(all_lib_targets)
 set(all_exe_targets)
+
+set(THIS_PACKAGE_INCLUDE_DEPENDS
+  rclcpp
+  geometry_msgs
+  std_msgs
+)
+
+foreach(Dependency IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
+  find_package(${Dependency} REQUIRED)
+endforeach()
+
+#include 
+include_directories(include)
 
 #
 # Add the main library
@@ -75,6 +88,12 @@ add_executable(ati_ft_sensor_test_sensor tests/test_sensor.cpp)
 target_link_libraries(ati_ft_sensor_test_sensor ${PROJECT_NAME})
 list(APPEND all_exe_targets ati_ft_sensor_test_sensor)
 
+# Standalone executable
+add_executable(ati_ft_sensor_wrench_pub nodes/ati_ft_sensor_wrench_pub.cpp)
+ament_target_dependencies(ati_ft_sensor_wrench_pub ${THIS_PACKAGE_INCLUDE_DEPENDS})
+target_link_libraries(ati_ft_sensor_wrench_pub ${PROJECT_NAME})
+list(APPEND all_exe_targets ati_ft_sensor_wrench_pub)
+
 #
 # building documentation
 #
@@ -84,6 +103,10 @@ add_documentation()
 # Install the package
 #
 install(DIRECTORY include/ DESTINATION include)
+
+install(DIRECTORY config launch
+  DESTINATION share/${PROJECT_NAME}
+)
 
 install(
   TARGETS ${all_lib_targets} ${all_exe_targets}

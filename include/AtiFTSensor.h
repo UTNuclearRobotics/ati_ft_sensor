@@ -2,37 +2,36 @@
  * @file AtiFTSensor.h
  * @author Ludovic Righetti
  * @license License BSD-3-Clause
- * @copyright Copyright (c) 2019, New York University and Max Planck Gesellschaft.
+ * @copyright Copyright (c) 2019, New York University and Max Planck
+ * Gesellschaft.
  * @date 2013-10-22
  */
 
 #ifndef ATIFTSENSOR_H_
 #define ATIFTSENSOR_H_
-#include <netinet/in.h>
 #include <arpa/inet.h>
 #include <errno.h>
+#include <netinet/in.h>
 #ifdef XENOMAI
-#include <native/task.h>
 #include <native/mutex.h>
 #include <native/pipe.h>
+#include <native/task.h>
 #else
-#include <mutex>          // std::mutex
+#include <mutex>  // std::mutex
 #endif
-#include <real_time_tools/thread.hpp>
-#include <boost/thread.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/bind.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/thread.hpp>
+#include <real_time_tools/thread.hpp>
 
+namespace ati_ft_sensor {
 
-namespace ati_ft_sensor
-{
-
-class AtiFTSensor{
-public:
+class AtiFTSensor {
+ public:
   AtiFTSensor();
   ~AtiFTSensor();
 
-  bool initialize();
+  bool initialize(const std::string& ip_address="");
 
   void getStatus(uint32_t& rdt_seq, uint32_t& ft_seq, uint32_t& status);
   void getFT(double* force, double* torque);
@@ -50,8 +49,7 @@ public:
 
 // Streaming support is only available on xenomai.
 #ifdef XENOMAI
-  struct steaming_msg
-  {
+  struct steaming_msg {
     uint32_t rdt_seq;
     uint32_t ft_seq;
     uint32_t status;
@@ -61,37 +59,32 @@ public:
   };
 #endif
 
-private:
-
+ private:
   static constexpr double count_per_force_ = 1000000.0;
   static constexpr double count_per_torque_ = 1000000.0;
 
-  struct received_msg
-  {
-    uint32_t rdt_sequence; // RDT sequence number of this packet.
-    uint32_t ft_sequence;  // The record’s internal sequence number
-    uint32_t status;       // System status code
+  struct received_msg {
+    uint32_t rdt_sequence;  // RDT sequence number of this packet.
+    uint32_t ft_sequence;   // The record’s internal sequence number
+    uint32_t status;        // System status code
     // Force and torque readings use counts values
-    int32_t Fx;   // X-axis force
-    int32_t Fy;   // Y-axis force
-    int32_t Fz;   // Z-axis force
-    int32_t Tx;   // X-axis torque
-    int32_t Ty;   // Y-axis torque
-    int32_t Tz;   // Z-axis torque
+    int32_t Fx;  // X-axis force
+    int32_t Fy;  // Y-axis force
+    int32_t Fz;  // Z-axis force
+    int32_t Tx;  // X-axis torque
+    int32_t Ty;  // Y-axis torque
+    int32_t Tz;  // Z-axis torque
   };
 
-  struct send_msg
-  {
-    uint16_t command_header; // = 0x1234 // Required
-    uint16_t command;       // Command to execute
-    uint32_t sample_count;  // Samples to output (0 = infinite)
-
+  struct send_msg {
+    uint16_t command_header;  // = 0x1234 // Required
+    uint16_t command;         // Command to execute
+    uint32_t sample_count;    // Samples to output (0 = infinite)
   };
 
-  static THREAD_FUNCTION_RETURN_TYPE read_ft(void* instance_pointer)
-  {
+  static THREAD_FUNCTION_RETURN_TYPE read_ft(void* instance_pointer) {
     ((AtiFTSensor*)(instance_pointer))->read_ft();
-      return THREAD_FUNCTION_RETURN_VALUE;
+    return THREAD_FUNCTION_RETURN_VALUE;
   }
 
   void read_ft();
@@ -114,7 +107,6 @@ private:
   bool streaming_;
 };
 
-}
-
+}  // namespace ati_ft_sensor
 
 #endif /* ATIFTSENSOR_H_ */
