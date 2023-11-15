@@ -18,7 +18,7 @@ Currently based on ROS2 humble release.
   export COLCON_WS=~/workspace/ros2_ati_ft_sensor_ws
   mkdir -p $COLCON_WS/src
   cd $COLCON_WS
-  git clone --branch sensor_pub_devel  https://github.com/UTNuclearRobotics/ati_ft_sensor.git src/ros2_ati_ft_sensor_ws
+  git clone --branch sensor_pub  https://github.com/UTNuclearRobotics/ati_ft_sensor.git src/ros2_ati_ft_sensor_ws
   ```
 
 #### Pull relevant packages and install dependencies
