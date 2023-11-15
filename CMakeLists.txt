@@ -46,6 +46,7 @@ set(all_exe_targets)
 set(THIS_PACKAGE_INCLUDE_DEPENDS
   rclcpp
   geometry_msgs
+  std_msgs
 )
 
 foreach(Dependency IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
