@@ -27,9 +27,9 @@ class ATIWrenchPublisher : public rclcpp::Node {
   ATIWrenchPublisher() : Node("ati_wrench_publisher") {
     initializeNode();
 
-    // Create a timer that calls the publish function every millisecond.
+    // Create a timer that calls the publish function every 10 milliseconds.
     timer_ = this->create_wall_timer(
-        std::chrono::milliseconds(1),
+        std::chrono::milliseconds(10),
         std::bind(&ATIWrenchPublisher::publishSensorData, this));
 
     if (!sensor_.initialize(ip_address_)) {
@@ -58,14 +58,9 @@ class ATIWrenchPublisher : public rclcpp::Node {
     this->declare_parameter("ip_address", rclcpp::PARAMETER_STRING);
     this->declare_parameter("pub_faked_wrench", rclcpp::PARAMETER_BOOL);
 
-    rclcpp::Parameter frame_id = this->get_parameter("frame_id");
-    rclcpp::Parameter pub_faked_wrench =
-        this->get_parameter("pub_faked_wrench");
-    rclcpp::Parameter ip_address = this->get_parameter("ip_address");
-
-    frame_id_ = frame_id.as_string();
-    ip_address_ = ip_address.as_string();
-    fake_controller_wrench_ = pub_faked_wrench.as_bool();
+    frame_id_ = this->get_parameter("frame_id").as_string();
+    ip_address_ = this->get_parameter("ip_address").as_string();
+    fake_controller_wrench_ = this->get_parameter("pub_faked_wrench").as_bool();
 
     // Create a publisher for the sensor data topic.
     pub_wrench_ = this->create_publisher<geometry_msgs::msg::WrenchStamped>(
