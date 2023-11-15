@@ -50,10 +50,12 @@ To launch the node, run:
   ```
 #### Ati Wrench Publisher
 To publish wrenches on a /wrench_data topic, update the ip_address and the frame_id parameters in the config/ft_publisher.yaml file and run:
+```
 ros2 launch ati_ft_sensor ati_ft_sensor.launch.py
+```
 
 #### Faked Controller Wrench Publisher for Admittance Control
-To control a visualization/simulation of a ROS2-enabled robot with data from the ati sensor, set the pub_faked_wrench parameter to True and launch the node. This will publish an additional Float64MultiArray std msg for admittance control. 
+To control a visualization/simulation of a ROS2-enabled robot with data from the ati sensor, set the `pub_faked_wrench` parameter to `True` and launch the node. This will publish additional Float64MultiArray std msg data on a /faked_forces_controller/commands topic for admittance control. 
 
 ### Hardware specs
 Refer to the [Ati_ft_sensor driver](https://github.com/open-dynamic-robot-initiative/ati_ft_sensor) for hardware specs. 
